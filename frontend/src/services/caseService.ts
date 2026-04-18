@@ -74,6 +74,19 @@ deleteAid: (id: number) => api.delete(`/aids/${id}`),
 getAidReceipt: (id: number) => api.get(`/aids/${id}/receipt`),
 getAidTypes: () => api.get('/aids/types'),
 getCasesForDropdown: () => api.get('/cases', { params: { size: 100 } }),
+
+// Monthly Aid Methods (Simplified)
+getCurrentCycle: () => api.get('/monthly/cycles/current'),
+generateCurrentCycleTransactions: () => api.post('/monthly/cycles/current/generate'),
+closeCurrentCycle: () => api.post('/monthly/cycles/current/close'),
+getCurrentTransactions: (params?: any) => api.get('/monthly/current/transactions', { params }),
+getCycleHistory: (params?: any) => api.get('/monthly/cycles/history', { params }),
+markTransactionDelivered: (transactionId: number, data?: any) => api.put(`/monthly/transactions/${transactionId}/deliver`, data || {}),
+bulkMarkDelivered: (transactionIds: number[]) => api.put('/monthly/transactions/bulk-deliver', transactionIds),
+getMonthlyDashboard: () => api.get('/monthly/dashboard'),
+openCurrentCycle: () => api.post('/monthly/cycles/current/open'),
+getCycleDetails: (cycleId: number) => api.get(`/monthly/cycles/${cycleId}/details`),
+exportCycleToExcel: (cycleId: number) => api.get(`/monthly/cycles/${cycleId}/export`, { responseType: 'blob' }),
 };
 
 export default caseService;

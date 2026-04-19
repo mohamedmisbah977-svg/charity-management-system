@@ -23,14 +23,19 @@ import SettingsPage from '@/pages/SettingsPage';
 import ProfilePage from '@/pages/ProfilePage';
 
 function AppInitializer({ children }: { children: React.ReactNode }) {
-  const { fetchMe, isAuthenticated } = useAuthStore();
+  const { fetchMe } = useAuthStore();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const init = async () => {
-      await fetchMe();
-      // Small delay to ensure state is updated
-      setTimeout(() => setLoading(false), 100);
+      try {
+        await fetchMe();
+      } catch (error) {
+        console.error('FetchMe error:', error);
+        // Even if fetchMe fails, we should stop loading
+      } finally {
+        setLoading(false);
+      }
     };
     init();
   }, []);
@@ -45,8 +50,6 @@ function AppInitializer({ children }: { children: React.ReactNode }) {
 
   return <>{children}</>;
 }
-
-
 
 export default function App() {
   return (

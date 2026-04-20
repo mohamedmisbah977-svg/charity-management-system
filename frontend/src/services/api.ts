@@ -1,12 +1,21 @@
 import axios from "axios";
 
-// Use environment variable for production, fallback to relative path for development
-const baseURL = import.meta.env.VITE_API_URL 
-  ? `${import.meta.env.VITE_API_URL}/api`
-  : "/api";
+// For production on Railway, use the backend URL from environment variable
+// For local development, use relative path (Vite proxy handles it)
+const getBaseURL = () => {
+  // Check if we're in production (Railway)
+  if (import.meta.env.PROD) {
+    const backendUrl = import.meta.env.VITE_API_URL;
+    if (backendUrl) {
+      return `${backendUrl}/api`;
+    }
+  }
+  // Development fallback
+  return "/api";
+};
 
 const api = axios.create({
-  baseURL: baseURL,
+  baseURL: getBaseURL(),
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",
@@ -16,7 +25,6 @@ const api = axios.create({
 api.interceptors.response.use(
   (res) => res,
   async (error) => {
-    // Don't redirect on login failures
     const url = error.config?.url;
     const isLoginRequest = url === '/auth/login';
     

@@ -1,7 +1,12 @@
 import axios from "axios";
 
+// Use environment variable for production, fallback to relative path for development
+const baseURL = import.meta.env.VITE_API_URL 
+  ? `${import.meta.env.VITE_API_URL}/api`
+  : "/api";
+
 const api = axios.create({
-  baseURL: "/api",
+  baseURL: baseURL,
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",
@@ -25,7 +30,6 @@ api.interceptors.response.use(
       }
     }
     
-    // Always reject so the calling code can handle the error
     return Promise.reject(error);
   }
 );

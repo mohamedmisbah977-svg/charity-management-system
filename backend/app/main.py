@@ -31,7 +31,18 @@ def ensure_database_columns():
     except Exception as e:
         print(f"Error adding column: {e}")
 
-
+def drop_old_column():
+    """Drop the old relationship column if it exists"""
+    try:
+        with engine.connect() as conn:
+            conn.execute(text("ALTER TABLE family_members DROP COLUMN IF EXISTS relationship"))
+            conn.commit()
+            print("Old column 'relationship' dropped successfully")
+    except Exception as e:
+        print(f"Error dropping column: {e}")
+        
+        
+        
 ALLOWED_ORIGINS = [
     "https://charity-management-system-production.up.railway.app",
     "https://astonishing-kindness-production-a216.up.railway.app",
@@ -63,7 +74,7 @@ app = FastAPI(
 
 # Run column check immediately (not waiting for startup event)
 ensure_database_columns()
-
+drop_old_column()
 # ← CORSOnErrorMiddleware FIRST (outermost wrapper)
 app.add_middleware(CORSOnErrorMiddleware)
 

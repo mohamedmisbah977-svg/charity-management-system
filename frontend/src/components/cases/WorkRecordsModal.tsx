@@ -120,7 +120,7 @@ export default function WorkRecordsModal({ caseId, onClose, onSuccess }: Props) 
               className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-light flex items-center gap-2"
             >
               <Save size={18} />
-              {loading ? 'جاري الحفظ...' : 'حفظ'}
+              {loading ? 'جاري الحفظ..' : 'حفظ'}
             </button>
           </div>
         </form>

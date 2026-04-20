@@ -1,16 +1,35 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import JSONResponse
+from starlette.middleware.base import BaseHTTPMiddleware
 import os
 
 from app.core.config import settings
 from app.api.auth import router as auth_router
-from app.api import cases
-from app.api import aids 
-from app.api import monthly
-from app.api import reports
-from app.api import users, audit
-from app.api import system_settings
+from app.api import cases, aids, monthly, reports, users, audit, system_settings
+
+ALLOWED_ORIGINS = [
+    "https://charity-management-system-production.up.railway.app",
+    "https://astonishing-kindness-production-a216.up.railway.app",
+]
+
+class CORSOnErrorMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        try:
+            response = await call_next(request)
+        except Exception:
+            response = JSONResponse(
+                status_code=500,
+                content={"detail": "Internal server error"}
+            )
+        origin = request.headers.get("origin", "")
+        if origin in ALLOWED_ORIGINS:
+            response.headers["Access-Control-Allow-Origin"] = origin
+            response.headers["Access-Control-Allow-Credentials"] = "true"
+            response.headers["Access-Control-Allow-Methods"] = "*"
+            response.headers["Access-Control-Allow-Headers"] = "*"
+        return response
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -19,16 +38,17 @@ app = FastAPI(
     redoc_url="/redoc",
 )
 
+# ← CORSOnErrorMiddleware FIRST (outermost wrapper)
+app.add_middleware(CORSOnErrorMiddleware)
+
+# ← CORSMiddleware SECOND (handles preflight OPTIONS)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "https://charity-management-system-production.up.railway.app",
-        "https://astonishing-kindness-production-a216.up.railway.app",
-    ],
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-    expose_headers=["Set-Cookie", "Authorization"],  # ← ADD THIS LINE
+    expose_headers=["Set-Cookie", "Authorization"],
 )
 
 app.include_router(auth_router, prefix=settings.API_PREFIX)

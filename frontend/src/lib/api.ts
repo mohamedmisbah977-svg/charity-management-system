@@ -11,8 +11,14 @@ api.interceptors.response.use(
   async (error) => {
     if (error.response?.status === 401) {
       const url = error.config?.url;
-      // Don't redirect for /auth/me endpoint and if already on login page or home
-      if (url !== '/auth/me' && window.location.pathname !== "/login" && window.location.pathname !== "/") {
+      const path = window.location.pathname;
+      // Skip redirect for auth endpoints and public pages
+      if (
+        url !== "/auth/me" &&
+        url !== "/auth/login" &&        // add this line
+        path !== "/login" &&
+        path !== "/"
+      ) {
         window.location.href = "/login";
       }
     }

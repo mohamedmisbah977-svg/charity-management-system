@@ -43,13 +43,11 @@ export const useAuthStore = create<AuthState>()(
             throw new Error("No access token received");
           }
           
-          // After login, fetch user data
-          const meResponse = await api.get("/auth/me");
-          set({ user: meResponse.data, isAuthenticated: true, isLoading: false });
-          return; // Success
+          // ✅ Use the user from login response directly - NO extra /auth/me call
+          set({ user: data.user, isAuthenticated: true, isLoading: false });
+          return;
         } catch (err: any) {
           set({ isLoading: false });
-          // Throw the error to be caught by the LoginPage
           throw err;
         }
       },
@@ -61,6 +59,7 @@ export const useAuthStore = create<AuthState>()(
           console.error("Logout error:", err);
         } finally {
           set({ user: null, isAuthenticated: false });
+          window.location.href = "/login";
         }
       },
 
@@ -79,3 +78,4 @@ export const useAuthStore = create<AuthState>()(
     }
   )
 );
+

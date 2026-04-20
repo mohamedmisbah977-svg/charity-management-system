@@ -9,9 +9,8 @@ export interface User {
   full_name: string;
   role: "Admin" | "Staff";
   is_active: boolean;
-  created_at?: string;  // ← Add this
-  updated_at?: string;  // ← Add this
-
+  created_at?: string;
+  updated_at?: string;
 }
 
 interface AuthState {
@@ -43,7 +42,7 @@ export const useAuthStore = create<AuthState>()(
             throw new Error("No access token received");
           }
           
-          // ✅ Use the user from login response directly - NO extra /auth/me call
+          // IMPORTANT: Use the user from login response - NO extra API call
           set({ user: data.user, isAuthenticated: true, isLoading: false });
           return;
         } catch (err: any) {
@@ -78,4 +77,3 @@ export const useAuthStore = create<AuthState>()(
     }
   )
 );
-

@@ -15,33 +15,31 @@ export default function FamilyMembersModal({ caseId, onClose, onSuccess }: Props
     age: '',
     marital_status: '',
     school_or_university: '',
-    member_relationship: '',
+    member_relationship: '',  // ← MUST be member_relationship
     notes: '',
   });
 
-const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
-        await caseService.createFamilyMember(caseId, {
-            name: formData.name,
-            age: formData.age ? parseInt(formData.age) : undefined,
-            marital_status: formData.marital_status,
-            school_or_university: formData.school_or_university,
-            member_relation: formData.member_relation,  
-            notes: formData.notes,
-        });
-        onSuccess();
-        onClose();
+      await caseService.createFamilyMember(caseId, {
+        name: formData.name,
+        age: formData.age ? parseInt(formData.age) : undefined,
+        marital_status: formData.marital_status,
+        school_or_university: formData.school_or_university,
+        member_relationship: formData.member_relationship,  // ← MUST be member_relationship
+        notes: formData.notes,
+      });
+      onSuccess();
+      onClose();
     } catch (error) {
-        console.error('Error saving family member:', error);
-        alert('حدث خطأ في حفظ البيانات');
+      console.error('Error saving family member:', error);
+      alert('حدث خطأ في حفظ البيانات');
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
-};
-
-
+  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
@@ -68,8 +66,8 @@ const handleSubmit = async (e: React.FormEvent) => {
             <select
               required
               className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-primary"
-              value={formData.member_relation}
-              onChange={(e) => setFormData({ ...formData, member_relation: e.target.value })}
+              value={formData.member_relationship}  // ← MUST be member_relationship
+              onChange={(e) => setFormData({ ...formData, member_relationship: e.target.value })}  // ← MUST be member_relationship
             >
               <option value="">اختر</option>
               <option value="أب">أب</option>

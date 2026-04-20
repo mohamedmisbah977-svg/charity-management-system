@@ -69,14 +69,13 @@ class FamilyMember(Base):
     age = Column(Integer)
     marital_status = Column(String(50))
     school_or_university = Column(String(200))
-    relationship = Column(String(50), nullable=False)
+    member_relationship = Column(String(50), nullable=False)  # ← Renamed from 'relationship'
     notes = Column(Text)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
     is_deleted = Column(Boolean, default=False)
 
-    case = relationship("Case", back_populates="family_members")
-
+    case = relationship("Case", back_populates="family_members")  # ← This stays as 'relationship'
 
 class WorkRecord(Base):
     __tablename__ = "work_records"

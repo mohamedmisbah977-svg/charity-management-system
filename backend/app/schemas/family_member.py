@@ -7,7 +7,7 @@ class FamilyMemberBase(BaseModel):
     age: Optional[int] = None
     marital_status: Optional[str] = None
     school_or_university: Optional[str] = None
-    relationship: str
+    member_relation: str  # ← CHANGE THIS
     notes: Optional[str] = None
 
 class FamilyMemberCreate(FamilyMemberBase):
@@ -18,7 +18,7 @@ class FamilyMemberUpdate(BaseModel):
     age: Optional[int] = None
     marital_status: Optional[str] = None
     school_or_university: Optional[str] = None
-    family_relation: Optional[str] = None  # Changed
+    member_relation: Optional[str] = None  # ← CHANGE THIS
     notes: Optional[str] = None
 
 class FamilyMemberResponse(FamilyMemberBase):

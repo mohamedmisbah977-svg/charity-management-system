@@ -31,9 +31,10 @@ export interface FamilyMember {
   age?: number;
   marital_status?: string;
   school_or_university?: string;
-  relationship: string;  // ← To this
+  member_relation: string;  // ← CHANGE THIS
   notes?: string;
 }
+
 
 export interface WorkRecord {
   id: number;

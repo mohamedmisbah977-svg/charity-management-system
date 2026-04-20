@@ -28,13 +28,13 @@ function AppInitializer({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const init = async () => {
-      // Only try to fetch user if there's a token in localStorage
       const token = localStorage.getItem("access_token");
       if (token) {
         try {
           await fetchMe();
         } catch (error) {
           console.error('FetchMe error:', error);
+          localStorage.removeItem("access_token");
         }
       }
       setLoading(false);
@@ -52,7 +52,6 @@ function AppInitializer({ children }: { children: React.ReactNode }) {
 
   return <>{children}</>;
 }
-
 
 export default function App() {
   return (

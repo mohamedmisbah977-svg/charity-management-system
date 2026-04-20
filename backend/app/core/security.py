@@ -3,26 +3,26 @@ from typing import Optional
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from fastapi import Depends, HTTPException, status, Cookie, Request
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi.security import OAuth2PasswordBearer, HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
 from app.core.config import settings
 from app.core.database import get_db
 
-# Password hashing - KEEP THIS
+# Password hashing
 pwd_context = CryptContext(schemes=["sha256_crypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login", auto_error=False)
 
 # Bearer security for token authentication
 security = HTTPBearer(auto_error=False)
 
-# ============ PASSWORD FUNCTIONS - KEEP THESE ============
+# ============ PASSWORD FUNCTIONS ============
 def verify_password(plain: str, hashed: str) -> bool:
     return pwd_context.verify(plain, hashed)
 
 def get_password_hash(password: str) -> str:
     return pwd_context.hash(password)
 
-# ============ TOKEN FUNCTIONS - KEEP THESE ============
+# ============ TOKEN FUNCTIONS ============
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
     to_encode = data.copy()
     expire = datetime.utcnow() + (expires_delta or timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES))
@@ -41,7 +41,7 @@ def decode_token(token: str) -> Optional[dict]:
     except JWTError:
         return None
 
-# ============ CURRENT USER FUNCTIONS - UPDATED WITH BEARER TOKEN ============
+# ============ CURRENT USER FUNCTIONS ============
 async def get_current_user(
     request: Request,
     credentials: HTTPAuthorizationCredentials = Depends(security),

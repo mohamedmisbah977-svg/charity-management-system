@@ -24,12 +24,11 @@ app.add_middleware(
     allow_origins=[
         "https://charity-management-system-production.up.railway.app",
         "https://astonishing-kindness-production-a216.up.railway.app",
-        "http://localhost:5173",
-        "http://localhost:3000",
     ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["Set-Cookie"],  # ← Add this
 )
 
 app.include_router(auth_router, prefix=settings.API_PREFIX)

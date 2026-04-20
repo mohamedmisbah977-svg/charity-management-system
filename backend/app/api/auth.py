@@ -127,6 +127,6 @@ async def refresh(
     new_token = create_access_token({"sub": str(user.id)})
     response.set_cookie("access_token", new_token,
                         max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
-                        httponly=True, samesite="lax",
+                        httponly=True, samesite="none",
                         secure=settings.ENVIRONMENT == "production")
     return {"access_token": new_token, "token_type": "bearer"}

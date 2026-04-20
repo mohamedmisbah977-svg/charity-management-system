@@ -4,10 +4,32 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
 import os
+from sqlalchemy import text, inspect  # ← ADDED
 
 from app.core.config import settings
+from app.core.database import engine  # ← ADDED
 from app.api.auth import router as auth_router
 from app.api import cases, aids, monthly, reports, users, audit, system_settings
+
+
+# ============ ADD THIS FUNCTION ============
+def ensure_database_columns():
+    """Add missing columns to database tables"""
+    try:
+        inspector = inspect(engine)
+        columns = [c['name'] for c in inspector.get_columns('family_members')]
+        
+        if 'member_relationship' not in columns:
+            print("Adding missing column: member_relationship")
+            with engine.connect() as conn:
+                conn.execute(text("ALTER TABLE family_members ADD COLUMN member_relationship VARCHAR(50)"))
+                conn.commit()
+                print("Column 'member_relationship' added successfully!")
+        else:
+            print("Column 'member_relationship' already exists")
+    except Exception as e:
+        print(f"Error adding column: {e}")
+
 
 ALLOWED_ORIGINS = [
     "https://charity-management-system-production.up.railway.app",
@@ -50,6 +72,12 @@ app.add_middleware(
     allow_headers=["*"],
     expose_headers=["Set-Cookie", "Authorization"],
 )
+
+# ============ ADD STARTUP EVENT ============
+@app.on_event("startup")
+def startup_event():
+    ensure_database_columns()
+# ============ END ============
 
 app.include_router(auth_router, prefix=settings.API_PREFIX)
 app.include_router(cases.router, prefix=settings.API_PREFIX)

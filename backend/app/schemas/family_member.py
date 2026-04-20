@@ -7,7 +7,7 @@ class FamilyMemberBase(BaseModel):
     age: Optional[int] = None
     marital_status: Optional[str] = None
     school_or_university: Optional[str] = None
-    family_relation: str  # Changed from 'relationship'
+    relationship: str
     notes: Optional[str] = None
 
 class FamilyMemberCreate(FamilyMemberBase):

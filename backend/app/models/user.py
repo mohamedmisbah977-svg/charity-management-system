@@ -69,7 +69,7 @@ class FamilyMember(Base):
     age = Column(Integer)
     marital_status = Column(String(50))
     school_or_university = Column(String(200))
-    family_relation = Column(String(50), nullable=False)
+    relationship = Column(String(50), nullable=False)
     notes = Column(Text)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())

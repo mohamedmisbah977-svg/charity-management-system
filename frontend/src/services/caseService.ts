@@ -31,7 +31,7 @@ export interface FamilyMember {
   age?: number;
   marital_status?: string;
   school_or_university?: string;
-  family_relation: string;
+  relationship: string;  // ← To this
   notes?: string;
 }
 
@@ -111,6 +111,9 @@ exportAuditLogs: (params?: any) => api.get('/audit-logs/export', { params, respo
 getSettings: () => api.get('/settings'),
 updateSetting: (key: string, value: string) => api.put(`/settings/${key}`, { setting_value: value }),
 backupDatabase: () => api.post('/settings/backup'),
+
+updateProfile: (data: any) => api.put('/users/profile', data),
+changePassword: (data: any) => api.put('/users/change-password', data),
 };
 
 export default caseService;

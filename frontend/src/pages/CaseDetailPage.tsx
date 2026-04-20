@@ -234,7 +234,7 @@ export default function CaseDetailPage() {
                 {familyMembers.map((member) => (
                   <div key={member.id} className="border rounded-lg p-3">
                     <p className="font-bold">{member.name}</p>
-                    <p className="text-sm text-gray-500">الصلة: {member.family_relation || member.family_relation}</p>
+                    <p className="text-sm text-gray-500">الصلة: {member.member_relationship || member.member_relationship}</p>
                     {member.age && <p className="text-sm">العمر: {member.age} سنة</p>}
                     {member.marital_status && <p className="text-sm">الحالة الاجتماعية: {member.marital_status}</p>}
                   </div>

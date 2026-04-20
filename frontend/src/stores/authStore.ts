@@ -37,14 +37,16 @@ export const useAuthStore = create<AuthState>()(
         set({ isLoading: true });
         try {
           const { data } = await api.post("/auth/login", { username, password });
-          
+
           if (!data.access_token) {
             throw new Error("No access token received");
           }
-          
-          // IMPORTANT: Use the user from login response - NO extra API call
+
+          // Save token to localStorage for Bearer authentication
+          localStorage.setItem("access_token", data.access_token);
+
+          // Use user from login response directly - no extra API call
           set({ user: data.user, isAuthenticated: true, isLoading: false });
-          return;
         } catch (err: any) {
           set({ isLoading: false });
           throw err;
@@ -57,16 +59,27 @@ export const useAuthStore = create<AuthState>()(
         } catch (err) {
           console.error("Logout error:", err);
         } finally {
+          // Clear token from localStorage
+          localStorage.removeItem("access_token");
           set({ user: null, isAuthenticated: false });
           window.location.href = "/login";
         }
       },
 
       fetchMe: async () => {
+        // Check if token exists before making request
+        const token = localStorage.getItem("access_token");
+        if (!token) {
+          set({ user: null, isAuthenticated: false });
+          return;
+        }
+        
         try {
           const { data } = await api.get("/auth/me");
           set({ user: data, isAuthenticated: true });
         } catch (error) {
+          // Token might be expired, clear it
+          localStorage.removeItem("access_token");
           set({ user: null, isAuthenticated: false });
         }
       },

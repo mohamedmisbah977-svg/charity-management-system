@@ -31,7 +31,7 @@ export interface FamilyMember {
   age?: number;
   marital_status?: string;
   school_or_university?: string;
-  member_relation: string;  // ← CHANGE THIS
+  member_relationship: string;
   notes?: string;
 }
 

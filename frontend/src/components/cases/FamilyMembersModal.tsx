@@ -15,7 +15,7 @@ export default function FamilyMembersModal({ caseId, onClose, onSuccess }: Props
     age: '',
     marital_status: '',
     school_or_university: '',
-    relationship: '',
+    member_relationship: '',
     notes: '',
   });
 
@@ -28,7 +28,7 @@ const handleSubmit = async (e: React.FormEvent) => {
             age: formData.age ? parseInt(formData.age) : undefined,
             marital_status: formData.marital_status,
             school_or_university: formData.school_or_university,
-            relationship: formData.relationship,  
+            member_relation: formData.member_relation,  
             notes: formData.notes,
         });
         onSuccess();
@@ -68,8 +68,8 @@ const handleSubmit = async (e: React.FormEvent) => {
             <select
               required
               className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-primary"
-              value={formData.relationship}
-              onChange={(e) => setFormData({ ...formData, relationship: e.target.value })}
+              value={formData.member_relation}
+              onChange={(e) => setFormData({ ...formData, member_relation: e.target.value })}
             >
               <option value="">اختر</option>
               <option value="أب">أب</option>

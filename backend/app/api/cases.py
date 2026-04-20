@@ -168,20 +168,34 @@ def delete_case(
 
 # ============ Family Members CRUD ============
 
+import traceback
+
 @router.get("/cases/{case_id}/family", response_model=List[FamilyMemberResponse])
 def get_family_members(
     case_id: int,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    case = db.query(Case).filter(Case.id == case_id, Case.is_deleted == False).first()
-    if not case:
-        raise HTTPException(status_code=404, detail="Case not found")
-    
-    return db.query(FamilyMember).filter(
-        FamilyMember.case_id == case_id,
-        FamilyMember.is_deleted == False
-    ).all()
+    try:
+        case = db.query(Case).filter(Case.id == case_id, Case.is_deleted == False).first()
+        if not case:
+            raise HTTPException(status_code=404, detail="Case not found")
+        
+        result = db.query(FamilyMember).filter(
+            FamilyMember.case_id == case_id,
+            FamilyMember.is_deleted == False
+        ).all()
+        
+        return result
+    except Exception as e:
+        print("=" * 50)
+        print("ERROR in get_family_members:")
+        print(f"Error type: {type(e).__name__}")
+        print(f"Error message: {str(e)}")
+        print(traceback.format_exc())
+        print("=" * 50)
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 @router.post("/cases/{case_id}/family", response_model=FamilyMemberResponse)
 def create_family_member(

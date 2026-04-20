@@ -1,14 +1,11 @@
 import axios from "axios";
 
 // For production on Railway, use the backend URL from environment variable
-// For local development, use relative path (Vite proxy handles it)
 const getBaseURL = () => {
-  // Check if we're in production (Railway)
-  if (import.meta.env.PROD) {
-    const backendUrl = import.meta.env.VITE_API_URL;
-    if (backendUrl) {
-      return `${backendUrl}/api`;
-    }
+  // Check if VITE_API_URL is set (Railway injection)
+  const backendUrl = import.meta.env.VITE_API_URL;
+  if (backendUrl) {
+    return `${backendUrl}/api`;
   }
   // Development fallback
   return "/api";

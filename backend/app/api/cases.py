@@ -197,6 +197,8 @@ def get_family_members(
         raise HTTPException(status_code=500, detail=str(e))
 
 
+import traceback
+
 @router.post("/cases/{case_id}/family", response_model=FamilyMemberResponse)
 def create_family_member(
     case_id: int,
@@ -204,16 +206,36 @@ def create_family_member(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    case = db.query(Case).filter(Case.id == case_id, Case.is_deleted == False).first()
-    if not case:
-        raise HTTPException(status_code=404, detail="Case not found")
-    
-    member = FamilyMember(**member_data.model_dump(), case_id=case_id)
-    db.add(member)
-    db.commit()
-    db.refresh(member)
-    
-    return member
+    try:
+        print("=" * 50)
+        print("Creating family member for case_id:", case_id)
+        print("Received data:", member_data)
+        print("member_relationship value:", member_data.member_relationship)
+        print("=" * 50)
+        
+        case = db.query(Case).filter(Case.id == case_id, Case.is_deleted == False).first()
+        if not case:
+            raise HTTPException(status_code=404, detail="Case not found")
+        
+        member = FamilyMember(
+            case_id=case_id,
+            name=member_data.name,
+            age=member_data.age,
+            marital_status=member_data.marital_status,
+            school_or_university=member_data.school_or_university,
+            member_relationship=member_data.member_relationship,
+            notes=member_data.notes,
+        )
+        db.add(member)
+        db.commit()
+        db.refresh(member)
+        
+        return member
+    except Exception as e:
+        print("ERROR in create_family_member:")
+        print(traceback.format_exc())
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 @router.put("/family/{member_id}", response_model=FamilyMemberResponse)
 def update_family_member(

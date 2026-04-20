@@ -73,8 +73,8 @@ async def login(
 
     cookie_opts = dict(
         httponly=True,
-        samesite="Strict",
-        secure=settings.ENVIRONMENT == "production",
+        samesite="none",
+        secure=True,
     )
     response.set_cookie("access_token", access_token,
                         max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60, **cookie_opts)
